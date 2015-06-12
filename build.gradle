@@ -1,0 +1,44 @@
+// Works: ./gradlew jettyRun
+// Fails with groovy ClassCastException: ./gradlew tomcatRun
+
+// It seems that the ClassCastException is caused by the gretty plugin modifying 
+// the groovy classes that are loaded for the web app.  Building a WAR and manually 
+// deploying to Tomcat works fine.
+
+buildscript {
+    repositories { 
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+}
+
+plugins {
+    id "java"
+    id "war"
+    id "eclipse"
+    // gretty 1.2.2 was last working version.  The build could not find gretty 1.2.3 in repositories
+    id "org.akhikhl.gretty" version "1.2.4"
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile (
+        'org.springframework:spring-core:4.1.5.RELEASE',
+        'org.springframework:spring-orm:4.1.5.RELEASE',
+        'org.springframework:spring-web:4.1.5.RELEASE',
+        'org.springframework:spring-webmvc:4.1.5.RELEASE',
+        'org.springframework.data:spring-data-jpa:1.7.0.RELEASE',
+        'org.liquibase:liquibase-core:3.3.3',
+        'org.liquibase:liquibase-groovy-dsl:1.1.0',
+        'com.h2database:h2:1.4.182'
+    )
+}
